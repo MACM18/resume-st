@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+}
+model User {
+  id String @id
+  name String
+  email String @unique
+  emailVerified Boolean @default(false)
+  image String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  accounts Account[]
+}
+model Session {
+  id String @id
+  expiresAt DateTime
+  token String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+model Account {
+  id String @id
+  accountId String
+  providerId String
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken String?
+  refreshToken String?
+  idToken String?
+  accessTokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope String?
+  password String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId])
+}
+model Verification {
+  id String @id
+  identifier String
+  value String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([identifier])
+}
+model RateLimit {
+  id String @id @default(cuid())
+  key String @unique
+  count Int
+  lastRequest BigInt
+}
+model Document {
+  id String @id @default(cuid())
+  kind String
+  draft Json
+  published Json?
+  version Int @default(1)
+  publishedAt DateTime?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  @@index([kind])
+}
+model Media {
+  id String @id @default(cuid())
+  key String @unique
+  name String
+  type String
+  size Int
+  alt String
+  createdAt DateTime @default(now())
+}
+model Contact {
+  id String @id @default(cuid())
+  name String
+  email String
+  subject String
+  message String
+  status String @default("unread")
+  createdAt DateTime @default(now())
+  job EmailJob?
+}
+model EmailJob {
+  id String @id @default(cuid())
+  contactId String @unique
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  status String @default("pending")
+  attempts Int @default(0)
+  nextAttempt DateTime @default(now())
+  lockedAt DateTime?
+  lastError String?
+  sentAt DateTime?
+}
+model Throttle {
+  key String @id
+  count Int
+  resetAt DateTime
+}
