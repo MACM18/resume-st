@@ -1146,6 +1146,80 @@ textarea::placeholder {
   text-decoration: underline;
   font-size: 11px;
 }
+.studio-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: min(90vh, 620px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid var(--ink);
+  border-radius: 9px;
+  background: #fffdf6;
+  color: var(--ink);
+  box-shadow: 0 24px 80px #20251e40;
+}
+.studio-dialog::backdrop {
+  background: #20251eb8;
+}
+.studio-dialog-panel {
+  position: relative;
+  padding: 35px;
+  border-top: 8px solid var(--yellow);
+}
+.studio-dialog-mark {
+  position: absolute;
+  right: 29px;
+  top: 18px;
+  color: #b3911a;
+  font-size: 31px;
+}
+.studio-dialog .eyebrow {
+  color: #796723;
+  margin-bottom: 16px;
+}
+.studio-dialog h2 {
+  font-size: 29px;
+  margin-bottom: 14px;
+  padding-right: 25px;
+}
+.studio-dialog p {
+  font-size: 13px;
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+.studio-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.studio-dialog .dialog-danger {
+  background: #963c28;
+  border-color: #963c28;
+  color: white;
+}
+@media (max-width: 480px) {
+  .studio-dialog-panel {
+    padding: 25px;
+  }
+  .studio-dialog-actions .button {
+    flex: 1 1 auto;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .studio-dialog[open] {
+    animation: studio-dialog-enter 180ms ease-out;
+  }
+  @keyframes studio-dialog-enter {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
 .studio-main {
   min-width: 0;
 }

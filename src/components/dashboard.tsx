@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Flower } from "./flower";
+import { useConfirmation, type Confirmation } from "./confirm-dialog";
 const VisualEditor = dynamic(
   () => import("./visual-editor").then((m) => m.VisualEditor),
   { ssr: false, loading: () => <p>Loading editor…</p> },
@@ -99,6 +100,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false),
     [dirty, setDirty] = useState(false);
+  const { confirm: askConfirmation, confirmationDialog } = useConfirmation();
   const [uploadAlt, setUploadAlt] = useState("");
   const uploadInput = useRef<HTMLInputElement>(null);
   const unread = inbox.filter((m) => m.status === "unread").length;
@@ -137,8 +139,17 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
       setBusy(false);
     }
   }
-  function go(id: string) {
-    if (dirty && !confirm("Leave without saving your changes?")) return;
+  async function go(id: string) {
+    if (
+      dirty &&
+      !(await askConfirmation({
+        title: "Leave this draft?",
+        message: "Your unsaved changes will be lost if you leave this page.",
+        confirmLabel: "Leave without saving",
+        cancelLabel: "Keep editing",
+      }))
+    )
+      return;
     setDirty(false);
     setSection(id);
     setActive(
@@ -184,8 +195,23 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
     setInbox(await api("/api/admin/inbox"));
     setNotice("Inbox updated.");
   }
+  async function signOut() {
+    if (
+      dirty &&
+      !(await askConfirmation({
+        title: "Sign out now?",
+        message: "Your unsaved changes will be lost when you sign out.",
+        confirmLabel: "Sign out",
+        cancelLabel: "Keep editing",
+      }))
+    )
+      return;
+    await createAuthClient().signOut();
+    window.location.assign("/login");
+  }
   return (
     <div className="studio">
+      {confirmationDialog}
       <aside className="studio-sidebar">
         <Link href="/" className="wordmark">
           little studio<span>✳</span>
@@ -215,28 +241,13 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
             <br />
             Built by <a href="https://macm.lk">MACM.lk</a>
           </span>
-          <button
-            onClick={async () => {
-              await createAuthClient().signOut();
-              window.location.assign("/login");
-            }}
-          >
-            Sign out
-          </button>
+          <button onClick={signOut}>Sign out</button>
         </div>
       </aside>
       <div className="studio-main">
         <header className="studio-topbar">
           <span>Your space to grow.</span>
-          <button
-            className="mobile-signout"
-            onClick={async () => {
-              if (dirty && !confirm("Sign out without saving your changes?"))
-                return;
-              await createAuthClient().signOut();
-              window.location.assign("/login");
-            }}
-          >
+          <button className="mobile-signout" onClick={signOut}>
             Sign out
           </button>
           <span>
@@ -257,9 +268,13 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                   onClick={() =>
                     run(async () => {
                       if (
-                        confirm(
-                          "Reload the latest saved content? Your unsaved edits will be discarded.",
-                        )
+                        await askConfirmation({
+                          title: "Reload the latest version?",
+                          message:
+                            "Your unsaved edits will be discarded. The other administrator’s saved changes will load instead.",
+                          confirmLabel: "Reload latest",
+                          cancelLabel: "Keep editing",
+                        })
                       ) {
                         setDocs(await api("/api/admin/documents"));
                         setDirty(false);
@@ -284,6 +299,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
               onAction={(action, data) =>
                 run(() => mutate(current, action, data))
               }
+              onConfirm={askConfirmation}
               upload={upload}
             />
           ) : (
@@ -493,22 +509,24 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                           <button
                             className="button small danger"
                             disabled={busy}
-                            onClick={() => {
+                            onClick={async () => {
                               if (
-                                confirm(
-                                  "Delete this file permanently? Referenced files cannot be deleted.",
-                                )
+                                !(await askConfirmation({
+                                  title: "Delete this file?",
+                                  message:
+                                    "This permanently removes the file. Files used by a draft or published page are protected from deletion.",
+                                  confirmLabel: "Delete file",
+                                  tone: "danger",
+                                }))
                               )
-                                run(async () => {
-                                  await api(
-                                    `/api/admin/media/${m.id}`,
-                                    "DELETE",
-                                  );
-                                  setMedia((prev) =>
-                                    prev.filter((x) => x.id !== m.id),
-                                  );
-                                  setNotice("File deleted.");
-                                });
+                                return;
+                              run(async () => {
+                                await api(`/api/admin/media/${m.id}`, "DELETE");
+                                setMedia((prev) =>
+                                  prev.filter((x) => x.id !== m.id),
+                                );
+                                setNotice("File deleted.");
+                              });
                             }}
                           >
                             <Trash2 size={13} />
@@ -605,8 +623,16 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                         <button
                           className="button small danger"
                           disabled={busy}
-                          onClick={() => {
-                            if (confirm("Permanently delete this request?"))
+                          onClick={async () => {
+                            if (
+                              await askConfirmation({
+                                title: "Delete this request?",
+                                message:
+                                  "This message will be removed from the inbox permanently.",
+                                confirmLabel: "Delete request",
+                                tone: "danger",
+                              })
+                            )
                               run(() => inboxAction(m.id, "delete"));
                           }}
                         >
@@ -715,6 +741,7 @@ function DocumentEditor({
   onDirty,
   onAction,
   onBack,
+  onConfirm,
 }: {
   doc: Doc;
   media: Media[];
@@ -722,6 +749,7 @@ function DocumentEditor({
   onDirty: () => void;
   onAction: (a: string, d?: unknown) => void;
   onBack: () => void;
+  onConfirm: (options: Confirmation) => Promise<boolean>;
   upload: (f: File, a: string) => Promise<Media>;
 }) {
   const [data, setData] = useState<Portfolio | Entry>(doc.draft),
@@ -1110,11 +1138,14 @@ function DocumentEditor({
           <button
             className="button small"
             disabled={busy || changed}
-            onClick={() => {
+            onClick={async () => {
               if (
-                confirm(
-                  "Remove this content from the public site? The saved draft will remain.",
-                )
+                await onConfirm({
+                  title: "Unpublish this content?",
+                  message:
+                    "It will disappear from the public site. Your saved draft will stay in the studio.",
+                  confirmLabel: "Unpublish",
+                })
               )
                 onAction("unpublish");
             }}
@@ -1126,11 +1157,15 @@ function DocumentEditor({
           <button
             className="button small danger"
             disabled={busy}
-            onClick={() => {
+            onClick={async () => {
               if (
-                confirm(
-                  "Permanently delete this entry and its published version?",
-                )
+                await onConfirm({
+                  title: "Delete this entry?",
+                  message:
+                    "This permanently removes both the saved draft and its published version.",
+                  confirmLabel: "Delete entry",
+                  tone: "danger",
+                })
               )
                 onAction("delete");
             }}
