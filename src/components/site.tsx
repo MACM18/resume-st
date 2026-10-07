@@ -5,6 +5,7 @@ import { Download, MapPin, Sparkles, Sun } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Reveal } from "./motion";
 import { ContactForm } from "./contact-form";
+import { RichText } from "./rich-text";
 export function Header({ name = "Sehani" }: { name?: string }) {
   return (
     <header className="site-header">
@@ -256,7 +257,9 @@ export function Home({
           </span>
         </div>
         <div>
-          <p className="about-text">{p.about}</p>
+          <div className="about-text">
+            <RichText value={p.about} compact />
+          </div>
           {p.skills.some((s) => !s.hidden) && (
             <div className="skill-list">
               {p.skills

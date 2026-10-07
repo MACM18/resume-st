@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { createAuthClient } from "better-auth/react";
 import {
   LayoutDashboard,
@@ -21,7 +22,10 @@ import {
 } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Flower } from "./flower";
-import { RichText } from "./rich-text";
+const VisualEditor = dynamic(
+  () => import("./visual-editor").then((m) => m.VisualEditor),
+  { ssr: false, loading: () => <p>Loading editor…</p> },
+);
 type Doc = {
   id: string;
   kind: string;
@@ -722,9 +726,7 @@ function DocumentEditor({
 }) {
   const [data, setData] = useState<Portfolio | Entry>(doc.draft),
     [tab, setTab] = useState("basics"),
-    [changed, setChanged] = useState(false),
-    [richPreview, setRichPreview] = useState(false);
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
+    [changed, setChanged] = useState(false);
   const isProfile = doc.kind === "portfolio";
   const p = data as Portfolio,
     e = data as Entry;
@@ -732,24 +734,6 @@ function DocumentEditor({
     setData((prev) => ({ ...prev, [key]: value }));
     setChanged(true);
     onDirty();
-  }
-  function toolbar(before: string, after = "") {
-    const field = bodyRef.current;
-    if (!field) return;
-    const start = field.selectionStart,
-      end = field.selectionEnd;
-    set(
-      "body",
-      e.body.slice(0, start) +
-        before +
-        e.body.slice(start, end) +
-        after +
-        e.body.slice(end),
-    );
-    requestAnimationFrame(() => {
-      field.focus();
-      field.setSelectionRange(start + before.length, end + before.length);
-    });
   }
   const tabs = isProfile
     ? [
@@ -894,11 +878,11 @@ function DocumentEditor({
           <div className="studio-card">
             <h2>Your story</h2>
             <p>A few words about who you are and what matters to you.</p>
-            <Field
+            <VisualEditor
               label="About you"
               value={p.about}
-              onChange={(v) => set("about", v)}
-              multiline
+              onChange={(value) => set("about", value)}
+              maxLength={5000}
             />
           </div>
           {(["experience", "education", "skills"] as const).map((key) => (
@@ -962,9 +946,8 @@ function DocumentEditor({
           <div className="studio-card">
             <h2>The story starts here</h2>
             <p>
-              Markdown supports headings, bold, italic, lists, quotes, and
-              links. Embedded HTML and images are disabled; add images in the
-              gallery.
+              Format your story directly with headings, emphasis, lists, quotes,
+              links, and code. Add images in the gallery.
             </p>
             <div className="editor-grid">
               <Field
@@ -1028,36 +1011,12 @@ function DocumentEditor({
                 </>
               )}
             </div>
-            <div className="markdown-toolbar">
-              <button onClick={() => toolbar("## ")}>Heading</button>
-              <button onClick={() => toolbar("**", "**")}>
-                <strong>B</strong>
-              </button>
-              <button onClick={() => toolbar("*", "*")}>
-                <em>I</em>
-              </button>
-              <button onClick={() => toolbar("- ")}>List</button>
-              <button onClick={() => toolbar("[", "](https://example.com)")}>
-                Link
-              </button>
-              <button onClick={() => setRichPreview(!richPreview)}>
-                {richPreview ? "Edit text" : "Preview text"}
-              </button>
-            </div>
-            {richPreview ? (
-              <RichText value={e.body} />
-            ) : (
-              <label>
-                Full story
-                <textarea
-                  ref={bodyRef}
-                  className="markdown-editor"
-                  value={e.body}
-                  onChange={(v) => set("body", v.target.value)}
-                  rows={14}
-                />
-              </label>
-            )}
+            <VisualEditor
+              label="Full story"
+              value={e.body}
+              onChange={(value) => set("body", value)}
+              maxLength={50000}
+            />
           </div>
         </>
       )}

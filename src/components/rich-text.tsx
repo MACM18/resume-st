@@ -1,7 +1,13 @@
 import Markdown from "react-markdown";
-export function RichText({ value }: { value: string }) {
+export function RichText({
+  value,
+  compact = false,
+}: {
+  value: string;
+  compact?: boolean;
+}) {
   return (
-    <div className="prose">
+    <div className={compact ? "prose prose-compact" : "prose"}>
       <Markdown
         skipHtml
         allowedElements={[
@@ -21,11 +27,17 @@ export function RichText({ value }: { value: string }) {
           "br",
         ]}
         components={{
-          a: ({ href, children }) => (
-            <a href={href} rel="noopener noreferrer">
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) =>
+            href &&
+            (/^https?:\/\//i.test(href) ||
+              /^mailto:/i.test(href) ||
+              (href.startsWith("/") && !href.startsWith("//"))) ? (
+              <a href={href} rel="noopener noreferrer">
+                {children}
+              </a>
+            ) : (
+              <span>{children}</span>
+            ),
         }}
       >
         {value}
