@@ -1,16 +1,7 @@
 import { Flower } from "./flower";
 import { AssetImage } from "./asset-image";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  ArrowRight,
-  Download,
-  MapPin,
-  Sparkles,
-  Flower2,
-  Sun,
-  MoveUpRight,
-} from "lucide-react";
+import { Download, MapPin, Sparkles, Sun } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Reveal } from "./motion";
 import { ContactForm } from "./contact-form";
@@ -26,7 +17,7 @@ export function Header({ name = "Sehani" }: { name?: string }) {
         <Link href="/projects">My work</Link>
         <Link href="/blog">Journal</Link>
         <Link href="/#contact" className="nav-contact">
-          Let’s talk <ArrowUpRight size={15} />
+          Let’s talk
         </Link>
       </nav>
     </header>
@@ -39,7 +30,7 @@ export function Footer({ name }: { name: string }) {
         © {new Date().getFullYear()} {name}. Made with a little sunshine.
       </span>
       <a href="https://macm.lk" target="_blank" rel="noopener noreferrer">
-        Built by <strong>MACM.lk</strong> <ArrowUpRight size={13} />
+        Built by <strong>MACM.lk</strong>
       </a>
     </footer>
   );
@@ -115,9 +106,7 @@ export function ProjectCard({
     <Link className="project-card" href={`/projects/${entry.slug}`}>
       <div className="project-image">
         <Cover entry={entry} index={index} />
-        <span className="card-arrow">
-          <ArrowUpRight size={22} />
-        </span>
+        <span className="card-cta">View project</span>
       </div>
       <div className="card-meta">
         <span>{entry.category || "SELECTED WORK"}</span>
@@ -166,7 +155,7 @@ export function Home({
           <p className="hero-intro">{p.intro}</p>
           <div className="hero-actions">
             <Link href="/projects" className="button dark">
-              Explore my work <ArrowUpRight size={18} />
+              Explore my work
             </Link>
             {p.resume ? (
               <span className="resume-links">
@@ -175,7 +164,7 @@ export function Home({
                   target="_blank"
                   className="text-link"
                 >
-                  My résumé <ArrowUpRight size={16} />
+                  My résumé
                 </a>
                 <a
                   href={`/api/media/${p.resume}?download=1`}
@@ -187,7 +176,7 @@ export function Home({
               </span>
             ) : (
               <a href="#about" className="text-link">
-                A little about me <ArrowRight size={16} />
+                A little about me
               </a>
             )}
           </div>
@@ -263,7 +252,7 @@ export function Home({
             <span className="serif">little introduction.</span>
           </h2>
           <span className="hand yellow-scribble">
-            Here’s a little of my story ↗
+            Here’s a little of my story
           </span>
         </div>
         <div>
@@ -289,7 +278,6 @@ export function Home({
                     rel="noopener noreferrer"
                   >
                     {s.label}
-                    <ArrowUpRight size={15} />
                   </a>
                 ))}
             </div>
@@ -309,7 +297,7 @@ export function Home({
                 </h2>
               </div>
               <Link className="text-link" href="/projects">
-                All my work <ArrowUpRight size={17} />
+                All my work
               </Link>
             </div>
             <div className="projects-grid">
@@ -373,7 +361,7 @@ export function Home({
               </h2>
             </div>
             <Link href="/blog" className="text-link">
-              The journal <ArrowUpRight size={17} />
+              The journal
             </Link>
           </div>
           {posts.slice(0, 3).map((post, i) => (
@@ -390,7 +378,7 @@ export function Home({
                 <h3>{post.title}</h3>
                 <p>{post.excerpt}</p>
               </div>
-              <MoveUpRight size={28} />
+              <span className="row-cta">Read story</span>
             </Link>
           ))}
         </section>
@@ -413,7 +401,6 @@ export function Home({
             {p.email && (
               <a className="contact-email" href={`mailto:${p.email}`}>
                 {p.email}
-                <ArrowUpRight size={22} />
               </a>
             )}
             {p.phone && (

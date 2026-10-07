@@ -518,6 +518,8 @@ img {
   gap: 6px;
   font-size: 12px;
   align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .work-section {
   background: #f0efe5;
@@ -557,21 +559,19 @@ img {
   height: 100%;
   object-fit: cover;
 }
-.card-arrow {
+.card-cta {
   position: absolute;
   right: 16px;
   bottom: 16px;
-  display: flex;
-  width: 40px;
-  height: 40px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  padding: 10px 15px;
+  border-radius: 6px;
   background: #ffffffed;
-  transition: transform 0.25s;
+  font-size: 11px;
+  font-weight: 700;
+  transition: background-color 0.25s;
 }
-.project-card:hover .card-arrow {
-  transform: rotate(45deg);
+.project-card:hover .card-cta {
+  background: var(--yellow);
 }
 .project-card h3 {
   font-size: 25px;
@@ -774,6 +774,13 @@ img {
 .journal-row > div {
   flex: 1;
 }
+.journal-row .row-cta {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .journal-row .eyebrow {
   margin-bottom: 8px;
   font-size: 9px;
@@ -905,6 +912,8 @@ textarea::placeholder {
 .site-footer strong {
   color: var(--ink);
   font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .listing h1 {
   max-width: 850px;
@@ -1686,9 +1695,6 @@ textarea::placeholder {
   }
   .journal-number {
     font-size: 25px;
-  }
-  .journal-row > svg {
-    width: 21px;
   }
   .contact-section {
     padding-block: 60px;

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUpRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 export function ContactForm() {
   const [state, setState] = useState(""),
     [busy, setBusy] = useState(false);
@@ -84,7 +84,6 @@ export function ContactForm() {
       </div>
       <button className="button dark" disabled={busy}>
         {busy ? "Sending…" : "Send a little hello"}
-        <ArrowUpRight size={18} />
       </button>
       <p role="status" className="form-status">
         {state && (

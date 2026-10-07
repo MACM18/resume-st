@@ -42,7 +42,7 @@ ADMIN_2_NAME=Her name
 ADMIN_2_PASSWORD=her-unique-long-password
 ```
 
-Use passwords of 12–128 characters. Run `npm run admin:bootstrap` locally. The Docker `setup` service automatically runs migrations, initializes the profile draft, and provisions both accounts before the app and worker start. Empty account groups are skipped; partial/invalid groups fail setup visibly. Existing accounts are left unchanged, including their passwords. Changing a bootstrap password variable does not reset an existing account: use the email password-reset flow. Remove bootstrap password variables after successful first provisioning. Reapply them only to create missing accounts. These variables are passed to the one-time setup service; the running app and worker receive only their own settings.
+Use passwords of 12–128 characters. Run `npm run admin:bootstrap` locally for first-time provisioning. For local development, `npm run dev` now synchronizes configured admin emails, names, and passwords before starting Next.js; `npm run admin:sync:dev` runs the same sync without starting the server, including when the local Docker app is already running. This command is restricted to a local PostgreSQL connection and local HTTP site URL. If changing an existing email, set `ADMIN_1_PREVIOUS_EMAIL` (or `ADMIN_2_PREVIOUS_EMAIL`) to the old address for one sync, then remove it. It revokes existing sessions when credentials change. The Docker `setup` service automatically runs migrations, initializes the profile draft, and provisions both accounts before the app and worker start. Empty account groups are skipped; partial/invalid groups fail setup visibly. The production bootstrap leaves existing accounts unchanged, including their passwords. Changing a production bootstrap password variable does not reset an existing account: use the email password-reset flow. In production, remove bootstrap password variables after successful first provisioning. Reapply them only to create missing accounts. These variables are passed to the one-time setup service; the running app and worker receive only their own settings.
 
 Both accounts have the same editing permissions. There is no public registration. Additional manual provisioning is available through `ADMIN_EMAIL`, `ADMIN_NAME`, `ADMIN_PASSWORD` and `npm run admin:create`.
 
@@ -59,15 +59,16 @@ Both accounts have the same editing permissions. There is no public registration
 
 ## Deploy with Dokploy
 
-Use a **Docker Compose** project with `compose.yaml` (do not include `compose.dev.yaml` in production).
+Use a **Docker Compose** project with `compose.dokploy.yaml`. The production stack pulls prebuilt GHCR images for the app, email worker, and setup service. `compose.yaml` remains the local source-build configuration.
 
-1. Connect this repository and select `compose.yaml`.
+1. Connect this repository to Dokploy and select `compose.dokploy.yaml`. Give Dokploy access to the two GHCR images, `ghcr.io/macm18/resume-st` and `ghcr.io/macm18/resume-st-tools`: make both packages public or configure a GHCR registry credential with `read:packages`.
 2. Paste your production settings into Dokploy’s environment configuration so it supplies the Compose `.env` file. Provide an external PostgreSQL connection, a separate production auth secret, SMTP, and S3 credentials. Use `DATABASE_URL=postgresql://.../production_database?schema=portfolio&sslmode=require` when your provider requires TLS. Leave `DOCKER_DATABASE_URL` unset so it inherits `DATABASE_URL`.
 3. Set `BETTER_AUTH_URL` and `SITE_URL` to the exact public HTTPS origin. Set `DEMO_MODE=false`. Supply the two account groups for initial provisioning.
 4. Create the private production S3 bucket beforehand; the development bucket initialization is not run in production. Set `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY`, and `S3_SECRET_KEY`. Set `S3_ENDPOINT` for compatible providers; leave it blank for AWS S3. The application credentials need only object Get/Put/Delete in that bucket.
 5. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` (`true` for implicit TLS, usually port 465), `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` (a verified sender), and `CONTACT_TO` (one address or a comma-separated recipient list). Visitor email is Reply-To, never the sender.
 6. In Dokploy Domains, route your domain to service **app**, container port **3000**, with HTTPS. The production Compose exposes the internal port without binding a host port. Dokploy manages routing labels and networks. [Dokploy domain instructions](https://docs.dokploy.com/docs/core/docker-compose/domains).
-7. Deploy. The setup service must succeed before app/worker start. Check `/api/health`, sign in, upload real content, preview, and publish. The site remains “coming soon” until publication.
+7. Add a GitHub Actions repository secret named `DOKPLOY_WEBHOOK_URL` containing the Dokploy Compose deployment webhook URL. A push to `main` builds and pushes both images to GHCR, then calls that webhook. Other branches do not deploy production. The workflow fails before the webhook if either image fails to publish. The webhook only confirms Dokploy accepted the request; check the deployment result in Dokploy.
+8. Deploy. The setup service must succeed before app/worker start. Check `/api/health`, sign in, upload real content, preview, and publish. The site remains “coming soon” until publication.
 
 Use one application instance and one or more email workers. The public cache is local to the application instance. Multiple application replicas require shared cache invalidation before scaling.
 

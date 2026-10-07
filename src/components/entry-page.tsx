@@ -1,6 +1,6 @@
 import { AssetImage } from "./asset-image";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Entry } from "@/lib/schema";
 import { Cover } from "./site";
 import { RichText } from "./rich-text";
@@ -45,7 +45,7 @@ export function EntryPage({ entry: e, kind }: { entry: Entry; kind: string }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Visit project <ArrowUpRight size={17} />
+              Visit project
             </a>
           )}
         </div>

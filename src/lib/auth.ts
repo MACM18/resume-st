@@ -2,7 +2,17 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "./db";
 import { sendMail } from "./mail";
+const configuredOrigin = new URL(
+  process.env.BETTER_AUTH_URL || "http://localhost:3000",
+);
+const localOrigins =
+  configuredOrigin.protocol === "http:" &&
+  configuredOrigin.hostname === "localhost"
+    ? [`http://127.0.0.1:${configuredOrigin.port || "80"}`]
+    : [];
+
 export const auth = betterAuth({
+  trustedOrigins: localOrigins,
   database: prismaAdapter(db, { provider: "postgresql" }),
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,

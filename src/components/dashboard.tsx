@@ -9,7 +9,6 @@ import {
   NotebookPen,
   Images,
   Mail,
-  ArrowUpRight,
   Plus,
   ArrowUp,
   ArrowDown,
@@ -205,7 +204,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
         </nav>
         <div className="studio-sidebar-bottom">
           <Link href="/" target="_blank">
-            Visit portfolio ↗
+            Visit portfolio
           </Link>
           <span>
             Made with sunshine.
@@ -294,7 +293,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                       <p>Here’s what’s happening in your little corner.</p>
                     </div>
                     <Link href="/" target="_blank" className="button small">
-                      View portfolio <ArrowUpRight size={14} />
+                      View portfolio
                     </Link>
                   </div>
                   <div className="studio-card welcome-card">
@@ -313,7 +312,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                       className="button dark small"
                       onClick={() => go("portfolio")}
                     >
-                      Edit my profile <ArrowUpRight size={14} />
+                      Edit my profile
                     </button>
                   </div>
                   <div className="stats-grid">
@@ -408,7 +407,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                             className="button small"
                             onClick={() => setActive(d.id)}
                           >
-                            Edit <ArrowUpRight size={13} />
+                            Edit
                           </button>
                         </div>
                       ))}
@@ -481,7 +480,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                             href={`/api/media/${m.id}`}
                             target="_blank"
                           >
-                            PDF ↗
+                            PDF
                           </a>
                         )}
                         <div>
@@ -694,7 +693,7 @@ function AssetPicker({
             target="_blank"
             className="text-link"
           >
-            View PDF ↗
+            View PDF
           </a>
         ) : (
           <img src={`/api/media/${current.id}`} alt={current.alt} />
