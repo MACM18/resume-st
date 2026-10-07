@@ -6,6 +6,8 @@ services:
       target: runner
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
+      STARTUP_SETUP: "false"
+      RUN_EMAIL_WORKER: "false"
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       SITE_URL: ${SITE_URL}
