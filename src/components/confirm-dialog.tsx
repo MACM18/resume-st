@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { PiAsteriskSimple } from "react-icons/pi";
 
 export type Confirmation = {
   title: string;
@@ -39,9 +40,7 @@ function ConfirmDialog({
     >
       {request && (
         <div className="studio-dialog-panel">
-          <span className="studio-dialog-mark" aria-hidden="true">
-            ✳
-          </span>
+          <PiAsteriskSimple className="studio-dialog-mark" aria-hidden="true" />
           <span className="eyebrow">A MOMENT BEFORE YOU GO</span>
           <h2 id="studio-dialog-title">{request.title}</h2>
           <p id="studio-dialog-message">{request.message}</p>

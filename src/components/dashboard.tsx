@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Flower } from "./flower";
+import { PiAsteriskSimple, PiSun } from "react-icons/pi";
 import { useConfirmation, type Confirmation } from "./confirm-dialog";
 const VisualEditor = dynamic(
   () => import("./visual-editor").then((m) => m.VisualEditor),
@@ -214,7 +215,10 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
       {confirmationDialog}
       <aside className="studio-sidebar">
         <Link href="/" className="wordmark">
-          little studio<span>✳</span>
+          little studio
+          <span aria-hidden="true">
+            <PiAsteriskSimple />
+          </span>
         </Link>
         <span className="studio-caption">YOUR CORNER OF THE INTERNET</span>
         <nav className="studio-nav" aria-label="Studio navigation">
@@ -309,7 +313,10 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
                   <div className="studio-title">
                     <div>
                       <span className="eyebrow">A FRESH PAGE, EVERY DAY</span>
-                      <h1>Hello, {user.split(" ")[0]} ☀</h1>
+                      <h1>
+                        Hello, {user.split(" ")[0]}{" "}
+                        <PiSun className="heading-icon" aria-hidden="true" />
+                      </h1>
                       <p>Here’s what’s happening in your little corner.</p>
                     </div>
                     <Link href="/" target="_blank" className="button small">

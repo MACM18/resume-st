@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { createAuthClient } from "better-auth/react";
 import { Flower } from "./flower";
+import { PiAsteriskSimple } from "react-icons/pi";
 const client = createAuthClient();
 export function LoginForm({ token }: { token?: string }) {
   const [mode, setMode] = useState(token ? "reset" : "login"),
@@ -12,7 +13,10 @@ export function LoginForm({ token }: { token?: string }) {
     <main id="main" className="auth-page">
       <div className="auth-art">
         <Link href="/" className="wordmark">
-          the little studio<span>✳</span>
+          the little studio
+          <span aria-hidden="true">
+            <PiAsteriskSimple />
+          </span>
         </Link>
         <Flower className="auth-flower" />
         <h1>

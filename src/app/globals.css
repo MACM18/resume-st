@@ -192,6 +192,9 @@ img {
   color: #c49304;
   font-size: 32px;
 }
+.wordmark span svg {
+  display: block;
+}
 .site-header nav {
   display: flex;
   align-items: center;
@@ -323,6 +326,23 @@ img {
   text-align: center;
   font-size: 16px;
   padding: 13px 0 15px;
+}
+.caption-icon,
+.inline-icon,
+.heading-icon {
+  display: inline-block;
+  vertical-align: -0.13em;
+}
+.caption-icon {
+  font-size: 20px;
+}
+.inline-icon {
+  font-size: 14px;
+  vertical-align: -0.24em;
+}
+.heading-icon {
+  color: #c49304;
+  font-size: 0.85em;
 }
 .tape {
   position: absolute;
@@ -809,6 +829,7 @@ img {
   font-size: 45px;
   display: inline-block;
   margin-left: 12px;
+  vertical-align: -0.13em;
 }
 .contact-section p {
   color: #5b542f;

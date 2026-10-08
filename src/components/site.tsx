@@ -2,6 +2,7 @@ import { Flower } from "./flower";
 import { AssetImage } from "./asset-image";
 import Link from "next/link";
 import { Download, MapPin, Sparkles, Sun } from "lucide-react";
+import { PiAsteriskSimple, PiSmiley, PiStarFour } from "react-icons/pi";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Reveal } from "./motion";
 import { ContactForm } from "./contact-form";
@@ -11,7 +12,9 @@ export function Header({ name = "Sehani" }: { name?: string }) {
     <header className="site-header">
       <Link className="wordmark" href="/">
         {name.toLowerCase()}
-        <span>✳</span>
+        <span aria-hidden="true">
+          <PiAsteriskSimple />
+        </span>
       </Link>
       <nav aria-label="Main navigation">
         <Link href="/#about">About</Link>
@@ -79,9 +82,12 @@ export function Cover({ entry, index = 0 }: { entry: Entry; index?: number }) {
               <br />
               <em>Keep growing.</em>
             </p>
-            <span>✳ &nbsp; one idea at a time</span>
+            <span>
+              <PiAsteriskSimple className="inline-icon" aria-hidden="true" />{" "}
+              one idea at a time
+            </span>
           </div>
-          <span className="art-star">✧</span>
+          <PiStarFour className="art-star" aria-hidden="true" />
         </>
       ) : (
         <>
@@ -221,7 +227,8 @@ export function Home({
               </div>
             )}
             <span className="hand photo-caption">
-              finding joy in the little things ☺
+              finding joy in the little things{" "}
+              <PiSmiley className="caption-icon" aria-hidden="true" />
             </span>
           </div>
           <div className="yellow-sticker">
@@ -394,7 +401,9 @@ export function Home({
               Good things start
               <br />
               with a <span className="serif">hello.</span>
-              <span className="hand">✳</span>
+              <span className="hand" aria-hidden="true">
+                <PiAsteriskSimple />
+              </span>
             </h2>
             <p>
               An idea, an opportunity, or just a friendly wave.
