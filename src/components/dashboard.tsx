@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Flower } from "./flower";
-import { PiAsteriskSimple, PiSun } from "react-icons/pi";
+import { PiSun, PiSun } from "react-icons/pi";
 import { useConfirmation, type Confirmation } from "./confirm-dialog";
 const VisualEditor = dynamic(
   () => import("./visual-editor").then((m) => m.VisualEditor),
@@ -217,7 +217,7 @@ export function Dashboard({ initial, user }: { initial: Doc[]; user: string }) {
         <Link href="/" className="wordmark">
           little studio
           <span aria-hidden="true">
-            <PiAsteriskSimple />
+            <PiSun />
           </span>
         </Link>
         <span className="studio-caption">YOUR CORNER OF THE INTERNET</span>

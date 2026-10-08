@@ -2,7 +2,7 @@ import { Flower } from "./flower";
 import { AssetImage } from "./asset-image";
 import Link from "next/link";
 import { Download, MapPin, Sparkles, Sun } from "lucide-react";
-import { PiAsteriskSimple, PiSmiley, PiStarFour } from "react-icons/pi";
+import { PiSun, PiSmiley, PiStarFour, PiSunHorizon } from "react-icons/pi";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Reveal } from "./motion";
 import { ContactForm } from "./contact-form";
@@ -11,9 +11,10 @@ export function Header({ name = "Sehani" }: { name?: string }) {
   return (
     <header className="site-header">
       <Link className="wordmark" href="/">
-        {name.toLowerCase()}
+      {/* Name in First Letter Capital */}
+        {name.charAt(0).toUpperCase() + name.slice(1)}
         <span aria-hidden="true">
-          <PiAsteriskSimple />
+          <PiSunHorizon />
         </span>
       </Link>
       <nav aria-label="Main navigation">
@@ -83,7 +84,7 @@ export function Cover({ entry, index = 0 }: { entry: Entry; index?: number }) {
               <em>Keep growing.</em>
             </p>
             <span>
-              <PiAsteriskSimple className="inline-icon" aria-hidden="true" />{" "}
+              <PiSun className="inline-icon" aria-hidden="true" />{" "}
               one idea at a time
             </span>
           </div>
@@ -402,7 +403,7 @@ export function Home({
               <br />
               with a <span className="serif">hello.</span>
               <span className="hand" aria-hidden="true">
-                <PiAsteriskSimple />
+                <PiSun />
               </span>
             </h2>
             <p>
