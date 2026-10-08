@@ -39,7 +39,7 @@ services:
   storage-init:
     build:
       context: .
-      target: tools
+      target: runner
     environment:
       S3_ENDPOINT: http://storage:9000
       S3_REGION: ${S3_REGION:-us-east-1}

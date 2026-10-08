@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import type { Portfolio, Entry } from "@/lib/schema";
 import { Flower } from "./flower";
-import { PiSun, PiSun } from "react-icons/pi";
+import { PiSun } from "react-icons/pi";
 import { useConfirmation, type Confirmation } from "./confirm-dialog";
 const VisualEditor = dynamic(
   () => import("./visual-editor").then((m) => m.VisualEditor),

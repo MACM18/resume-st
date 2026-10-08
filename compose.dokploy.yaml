@@ -35,8 +35,9 @@ services:
     security_opt:
       - no-new-privileges:true
   worker:
-    image: ${TOOLS_IMAGE:-ghcr.io/macm18/resume-st-tools:latest}
+    image: ${APP_IMAGE:-ghcr.io/macm18/resume-st:latest}
     pull_policy: always
+    command: ["npm", "run", "worker"]
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
@@ -54,14 +55,14 @@ services:
     security_opt:
       - no-new-privileges:true
   setup:
-    image: ${TOOLS_IMAGE:-ghcr.io/macm18/resume-st-tools:latest}
+    image: ${APP_IMAGE:-ghcr.io/macm18/resume-st:latest}
     pull_policy: always
     env_file: .env
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
     command: ["npm", "run", "setup"]
   migrate:
-    image: ${TOOLS_IMAGE:-ghcr.io/macm18/resume-st-tools:latest}
+    image: ${APP_IMAGE:-ghcr.io/macm18/resume-st:latest}
     pull_policy: always
     env_file: .env
     environment:

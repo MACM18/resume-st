@@ -38,7 +38,8 @@ services:
   worker:
     build:
       context: .
-      target: tools
+      target: runner
+    command: ["npm", "run", "worker"]
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
@@ -58,7 +59,7 @@ services:
   setup:
     build:
       context: .
-      target: tools
+      target: runner
     env_file: .env
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
@@ -66,7 +67,7 @@ services:
   migrate:
     build:
       context: .
-      target: tools
+      target: runner
     env_file: .env
     environment:
       DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL}}
